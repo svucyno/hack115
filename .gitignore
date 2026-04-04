@@ -1,6 +1,7 @@
 backend/__pycache__/
 backend/.venv/
 backend/venv/
+backend/.env
 backend/model_files/*.joblib
 frontend/node_modules/
 frontend/dist/
