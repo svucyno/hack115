@@ -480,6 +480,18 @@ export function HealthProvider({ children }) {
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
+  // Keep refs to avoid continuous re-triggers of the intervals
+  const locationRef = useRef(location);
+  const predictAndReactRef = useRef(predictAndReact);
+
+  useEffect(() => {
+    locationRef.current = location;
+  }, [location]);
+
+  useEffect(() => {
+    predictAndReactRef.current = predictAndReact;
+  }, [predictAndReact]);
+
   // ── PATIENT SENDER: simulate vitals + push to Supabase ──
   // Runs as soon as role resolves to 'patient' — does NOT wait for patientRecordId
   useEffect(() => {
@@ -503,10 +515,14 @@ export function HealthProvider({ children }) {
             temperature_c: Math.round(randomWalk(v.temperature_c, 0.12, 36.2, 37.8) * 10) / 10,
           };
         }
-        const loc = { latitude: location.latitude, longitude: location.longitude };
+        
+        const loc = { 
+          latitude: locationRef.current.latitude, 
+          longitude: locationRef.current.longitude 
+        };
         
         // Predict locally for UI
-        predictAndReact(next, loc).then((pred) => {
+        predictAndReactRef.current(next, loc).then((pred) => {
            // Upload to Supabase only if we have a patientRecordId
            if (patientRecordId) {
              supabase.from('vitals').insert([{
@@ -535,8 +551,9 @@ export function HealthProvider({ children }) {
         return next;
       });
     }, 2500);
+    
     return () => clearInterval(interval);
-  }, [authReady, role, patientRecordId, predictAndReact, location.latitude, location.longitude]);
+  }, [authReady, role, patientRecordId]); // REMOVED predictAndReact and location.latitude/longitude
 
   // ── FAMILY/DOCTOR RECEIVER: listen to linked patient's Supabase Realtime ──
   useEffect(() => {

@@ -1,0 +1,102 @@
+
+04-06 00:54:23.030 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.046 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.062 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.079 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.096 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.103 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.502 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.546 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.563 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.578 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.597 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.613 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.620 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.622 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:23.916 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:24.236 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.296 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.313 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.331 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.347 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.363 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.369 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.371 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.762 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.795 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.813 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.829 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.846 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.862 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.864 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:24.949 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:25.195 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.241 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.256 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.272 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.294 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.297 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.323 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:25.845 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.878 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.895 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.912 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.928 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.942 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:25.944 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:25.946 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.647 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.696 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.713 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.736 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.747 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.762 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.776 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.778 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:26.925 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:27.348 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.379 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.396 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.413 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.429 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.448 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.449 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:27.927 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:28.941 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:29.217 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.262 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.281 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.295 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.312 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.330 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.346 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.363 20001 20001 D DragManager: DecorView :com.getcapacitor.CapacitorWebView
+04-06 00:54:29.960 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:30.393 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:30.676 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:30.944 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:31.944 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:32.792 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:32.940 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:33.942 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:34.800 20001 20001 D Capacitor: App paused
+04-06 00:54:34.996 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:35.431 20001 20001 D Capacitor: App stopped
+04-06 00:54:35.441 20001 20001 D Capacitor: Saving instance state!
+04-06 00:54:40.095 20001 20001 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-06 00:54:40.101 20001 20001 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 113626486, pluginId: LocalNotifications, methodName: checkPermissions
+04-06 00:54:40.102 20001 20001 V Capacitor: callback: 113626486, pluginId: LocalNotifications, methodName: checkPermissions, methodData: {}
+04-06 00:54:40.117 20001 20001 I Capacitor/Console: File:  - Line 333 - Msg: {"display":"prompt"}
+04-06 00:54:40.118 20001 20001 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-06 00:54:40.121 20001 20001 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 113626487, pluginId: LocalNotifications, methodName: requestPermissions
+04-06 00:54:40.121 20001 20001 V Capacitor: callback: 113626487, pluginId: LocalNotifications, methodName: requestPermissions, methodData: {}
+04-06 00:54:40.182 20001 20001 I Capacitor/Console: File: https://localhost/assets/index-DiPhU4Gp.js - Line 84 - Msg: [HealthContext] Γ£à Starting patient vitals simulation. patientRecordId: 78efcf88-55e3-45b5-b210-d8f51d84b6e6
+04-06 00:54:42.806 20001 20001 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-06 00:54:42.809 20001 20001 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 113626488, pluginId: LocalNotifications, methodName: checkPermissions
+04-06 00:54:42.810 20001 20001 V Capacitor: callback: 113626488, pluginId: LocalNotifications, methodName: checkPermissions, methodData: {}
+04-06 00:54:42.895 20001 20001 I Capacitor/Console: File:  - Line 333 - Msg: {"display":"prompt"}
+04-06 00:54:42.896 20001 20001 I Capacitor/Console: File:  - Line 349 - Msg: [object Object]
+04-06 00:54:42.899 20001 20001 V Capacitor/Plugin: To native (Capacitor plugin): callbackId: 113626489, pluginId: LocalNotifications, methodName: requestPermissions
+04-06 00:54:42.899 20001 20001 V Capacitor: callback: 113626489, pluginId: LocalNotifications, methodName: requestPermissions, methodData: {}
+04-06 00:54:42.901 20001 22652 D Capacitor: Unable to find a Capacitor plugin to handle permission requestCode, trying Cordova plugins 1345652776
+
