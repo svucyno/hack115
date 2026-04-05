@@ -235,29 +235,50 @@ export function HealthProvider({ children }) {
 
   // ── Auth Init: resolve role + patientRecordId ──
   useEffect(() => {
-    const initAuth = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
+    let isMounted = true;
+
+    const initAuth = async (session) => {
+      if (!isMounted) return;
+
       if (!session) {
         console.log("[HealthContext] No session found");
+        setRole(null);
+        setPatientRecordId(null);
+        setUserId(null);
         setAuthReady(true);
         return;
       }
 
       setUserId(session.user.id);
       console.log("[HealthContext] Session user:", session.user.id);
-      console.log("[HealthContext] user_metadata:", JSON.stringify(session.user.user_metadata));
 
       const resolvedRole = await resolveRole(session);
+      if (!isMounted) return;
       console.log("[HealthContext] Resolved role:", resolvedRole);
       setRole(resolvedRole);
 
       const pid = await resolvePatientRecordId(session, resolvedRole);
+      if (!isMounted) return;
       console.log("[HealthContext] Resolved patientRecordId:", pid);
       setPatientRecordId(pid);
 
       setAuthReady(true);
     };
-    initAuth();
+
+    // Get initial session
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      initAuth(session);
+    });
+
+    // Listen for auth changes (like after logging in from Auth.jsx)
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      initAuth(session);
+    });
+
+    return () => {
+      isMounted = false;
+      subscription?.unsubscribe();
+    };
   }, []);
 
   const setFamilyPhone = useCallback((value) => {
