@@ -2,11 +2,43 @@ import { useHealth } from "../context/HealthContext.jsx";
 import PatientMap from "./PatientMap.jsx";
 
 export default function FamilyTracker() {
-  const { vitals, prediction, location, hospital, routeCoords, emergencyActive } = useHealth();
+  const { vitals, prediction, location, hospital, routeCoords, emergencyActive, patientRecordId, authReady } = useHealth();
   const lat = location.latitude;
   const lng = location.longitude;
 
   const cat = prediction?.category;
+
+  if (!authReady) {
+    return (
+      <div className="page-enter" style={{ textAlign: "center", marginTop: "4rem" }}>
+        <div style={{ fontSize: "1.5rem", marginBottom: "0.5rem" }}>⏳</div>
+        <p style={{ color: "var(--muted)" }}>Loading your dashboard...</p>
+      </div>
+    );
+  }
+
+  if (!patientRecordId) {
+    return (
+      <div className="page-enter">
+        <header style={{ marginBottom: "1.25rem" }}>
+          <h1 style={{ margin: 0, fontSize: "1.5rem" }}>Family Tracker</h1>
+          <p style={{ margin: 0, color: "var(--muted)", fontSize: "0.88rem" }}>
+            Live caregiver view
+          </p>
+        </header>
+
+        <div className="card" style={{ textAlign: "center", padding: "3rem 1rem" }}>
+          <span style={{ fontSize: "3rem", display: "block", marginBottom: "1rem" }}>🔗</span>
+          <h2 style={{ margin: "0 0 0.5rem" }}>No Patient Linked</h2>
+          <p style={{ color: "var(--muted)", margin: 0, lineHeight: 1.6 }}>
+            You have not been linked to a patient yet.<br />
+            The patient must go to their dashboard and authorize your account
+            under <strong style={{ color: "var(--neon-cyan)" }}>"Manage Permissions"</strong> first.
+          </p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="page-enter">
@@ -15,7 +47,7 @@ export default function FamilyTracker() {
           <h1 style={{ margin: 0, fontSize: "1.5rem" }}>Family Tracker</h1>
           <span className={`status-dot ${emergencyActive ? "danger" : ""}`} />
           <span style={{ fontSize: "0.78rem", color: emergencyActive ? "var(--danger)" : "var(--success)" }}>
-            {emergencyActive ? "EMERGENCY" : "Connected"}
+            {emergencyActive ? "EMERGENCY" : "Connected · Live"}
           </span>
         </div>
         <p style={{ margin: 0, color: "var(--muted)", fontSize: "0.88rem" }}>
@@ -54,7 +86,7 @@ export default function FamilyTracker() {
             border: "1px solid var(--border)",
           }}>
             <div style={{ fontSize: "0.72rem", color: "var(--muted)", textTransform: "uppercase", letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
-              Vitals
+              Vitals (Live)
             </div>
             <div style={{ fontFamily: "'JetBrains Mono', monospace", fontSize: "0.88rem", lineHeight: 1.8 }}>
               <div>
@@ -97,7 +129,7 @@ export default function FamilyTracker() {
                 </div>
               </div>
             ) : (
-              <span style={{ color: "var(--muted)", fontSize: "0.88rem" }}>Awaiting data…</span>
+              <span style={{ color: "var(--muted)", fontSize: "0.88rem" }}>Awaiting live data…</span>
             )}
           </div>
 

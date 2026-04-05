@@ -25,7 +25,6 @@ import { NotificationService } from "../utils/notificationService.js";
 const HealthContext = createContext(null);
 
 const FAMILY_PHONE_KEY = "lifeguard_family_phone";
-const API_BASE_KEY = "lifeguard_api_base";
 const API = "https://lifeguard-ai-arpd.onrender.com/api";
 
 function apiFetch(path, options = {}) {
@@ -67,7 +66,6 @@ async function fetchNearestHospital(lat, lng) {
   return res.json();
 }
 
-/** OSRM public demo — free, no key. Falls back to straight line if blocked. */
 async function sendFamilyAlertCloud({ toPhone, message, latitude, longitude }) {
   const res = await apiFetch(`/send-family-alert`, {
     method: "POST",
@@ -96,10 +94,104 @@ async function fetchRoute(lat1, lng1, lat2, lng2) {
   }
 }
 
+/**
+ * Resolves the user role with multiple fallback layers:
+ * 1. profiles table (primary)
+ * 2. user_metadata from JWT (fallback)
+ * 3. URL hash path (last resort)
+ */
+async function resolveRole(session) {
+  if (!session) return null;
+
+  // Try profiles table first
+  try {
+    const { data: profile, error } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', session.user.id)
+      .single();
+
+    if (!error && profile?.role) {
+      console.log("[HealthContext] Role from profiles table:", profile.role);
+      return profile.role;
+    }
+  } catch (e) {
+    console.warn("[HealthContext] profiles query failed:", e);
+  }
+
+  // Fallback to user_metadata
+  const metaRole = session.user?.user_metadata?.role;
+  if (metaRole) {
+    console.log("[HealthContext] Role from user_metadata:", metaRole);
+    return metaRole;
+  }
+
+  // Last resort: infer from URL hash
+  const hash = window.location.hash || "";
+  if (hash.includes("/patient")) return "patient";
+  if (hash.includes("/family")) return "family";
+  if (hash.includes("/doctor")) return "doctor";
+
+  return "patient"; // absolute default
+}
+
+/**
+ * Resolves the patient record ID (patients table PK) for a patient user.
+ * Falls back gracefully if the table doesn't exist or RLS blocks.
+ */
+async function resolvePatientRecordId(session, role) {
+  if (!session) return null;
+
+  if (role === 'patient') {
+    try {
+      const { data } = await supabase
+        .from('patients')
+        .select('id')
+        .eq('profile_id', session.user.id)
+        .single();
+      if (data?.id) return data.id;
+    } catch (e) {
+      console.warn("[HealthContext] patients query failed:", e);
+    }
+    return null;
+  }
+
+  if (role === 'family') {
+    try {
+      const { data: links } = await supabase
+        .from('family_patient_links')
+        .select('patient_id')
+        .eq('family_profile_id', session.user.id)
+        .limit(1);
+      if (links && links.length > 0) return links[0].patient_id;
+    } catch (e) {
+      console.warn("[HealthContext] family_patient_links query failed:", e);
+    }
+    return null;
+  }
+
+  if (role === 'doctor') {
+    try {
+      const { data: links } = await supabase
+        .from('doctor_patient_links')
+        .select('patient_id')
+        .eq('doctor_profile_id', session.user.id)
+        .limit(1);
+      if (links && links.length > 0) return links[0].patient_id;
+    } catch (e) {
+      console.warn("[HealthContext] doctor_patient_links query failed:", e);
+    }
+    return null;
+  }
+
+  return null;
+}
+
 export function HealthProvider({ children }) {
   const [role, setRole] = useState(null);
   const [patientRecordId, setPatientRecordId] = useState(null);
   const [userId, setUserId] = useState(null);
+  const [authReady, setAuthReady] = useState(false);
 
   const [vitals, setVitals] = useState({
     heart_rate: 74,
@@ -141,30 +233,29 @@ export function HealthProvider({ children }) {
   familyPhoneRef.current = familyPhone;
   const popupQueue = useRef([]);
 
-  // Fetch Supabase Session and Role
+  // ── Auth Init: resolve role + patientRecordId ──
   useEffect(() => {
     const initAuth = async () => {
       const { data: { session } } = await supabase.auth.getSession();
-      if (!session) return;
-      setUserId(session.user.id);
-
-      const { data: profile } = await supabase
-        .from('profiles')
-        .select('role')
-        .eq('id', session.user.id)
-        .single();
-
-      if (profile) setRole(profile.role);
-
-      // If patient, fetch their specific patients table ID (the primary key 'id')
-      if (profile?.role === 'patient') {
-        const { data: patientRecord } = await supabase
-          .from('patients')
-          .select('id')
-          .eq('profile_id', session.user.id)
-          .single();
-        if (patientRecord) setPatientRecordId(patientRecord.id);
+      if (!session) {
+        console.log("[HealthContext] No session found");
+        setAuthReady(true);
+        return;
       }
+
+      setUserId(session.user.id);
+      console.log("[HealthContext] Session user:", session.user.id);
+      console.log("[HealthContext] user_metadata:", JSON.stringify(session.user.user_metadata));
+
+      const resolvedRole = await resolveRole(session);
+      console.log("[HealthContext] Resolved role:", resolvedRole);
+      setRole(resolvedRole);
+
+      const pid = await resolvePatientRecordId(session, resolvedRole);
+      console.log("[HealthContext] Resolved patientRecordId:", pid);
+      setPatientRecordId(pid);
+
+      setAuthReady(true);
     };
     initAuth();
   }, []);
@@ -233,12 +324,14 @@ export function HealthProvider({ children }) {
 
       // Insert into Supabase Alerts Table so family/doctors receive the push naturally
       if (role === 'patient' && patientRecordId) {
-        await supabase.from('emergency_alerts').insert([{
+        supabase.from('emergency_alerts').insert([{
            patient_id: patientRecordId,
            triggered_by: "high_risk_prediction",
            severity: "critical",
            status: "open"
-        }]);
+        }]).then(({ error }) => {
+          if (error) console.warn("[HealthContext] Emergency alert insert error:", error);
+        });
       }
 
       setPatientModalOpen(true);
@@ -333,13 +426,14 @@ export function HealthProvider({ children }) {
         return pred;
       } catch (e) {
         setLastError(String(e.message || e));
-        console.error(e);
+        console.error("[HealthContext] predictAndReact error:", e);
         return null;
       }
     },
     [runEmergencySideEffects, processRecommendations]
   );
 
+  // ── Geolocation ──
   useEffect(() => {
     if (!navigator.geolocation) {
       setLocation((l) => ({ ...l, error: "Geolocation not supported" }));
@@ -365,11 +459,17 @@ export function HealthProvider({ children }) {
     return () => navigator.geolocation.clearWatch(watchId);
   }, []);
 
-  // SENDER LOGIC: Patient creates simulation data and pushes to Supabase
+  // ── PATIENT SENDER: simulate vitals + push to Supabase ──
+  // Runs as soon as role resolves to 'patient' — does NOT wait for patientRecordId
   useEffect(() => {
-    if (role !== 'patient' || !patientRecordId) return;
+    if (!authReady || role !== 'patient') {
+      console.log("[HealthContext] Patient simulation NOT starting. authReady:", authReady, "role:", role);
+      return;
+    }
 
-    const interval = setInterval(async () => {
+    console.log("[HealthContext] ✅ Starting patient vitals simulation. patientRecordId:", patientRecordId);
+
+    const interval = setInterval(() => {
       setVitals((v) => {
         let next = { ...v };
         if (forceAbnormal.current) {
@@ -384,9 +484,9 @@ export function HealthProvider({ children }) {
         }
         const loc = { latitude: location.latitude, longitude: location.longitude };
         
-        // Let React state update locally immediately
+        // Predict locally for UI
         predictAndReact(next, loc).then((pred) => {
-           // Now push to Supabase Vitals Table
+           // Upload to Supabase only if we have a patientRecordId
            if (patientRecordId) {
              supabase.from('vitals').insert([{
                 patient_id: patientRecordId,
@@ -394,7 +494,9 @@ export function HealthProvider({ children }) {
                 spo2: next.spo2,
                 temperature: next.temperature_c,
                 risk_score: pred?.risk_score || 0
-             }]).catch(err => console.error("Supabase vitals upload error:", err));
+             }]).then(({ error }) => {
+               if (error) console.warn("[HealthContext] Vitals upload error:", error.message);
+             });
              
              if (loc.latitude) {
                supabase.from('locations').insert([{
@@ -402,7 +504,9 @@ export function HealthProvider({ children }) {
                   lat: loc.latitude,
                   lng: loc.longitude,
                   accuracy: 10
-               }]).catch(err => console.error("Supabase locations upload error:", err));
+               }]).then(({ error }) => {
+                 if (error) console.warn("[HealthContext] Location upload error:", error.message);
+               });
              }
            }
         });
@@ -411,15 +515,48 @@ export function HealthProvider({ children }) {
       });
     }, 2500);
     return () => clearInterval(interval);
-  }, [role, patientRecordId, predictAndReact, location.latitude, location.longitude]);
+  }, [authReady, role, patientRecordId, predictAndReact, location.latitude, location.longitude]);
 
-  // RECEIVER LOGIC: Family and Doctor listen to Supabase Realtime changes
+  // ── FAMILY/DOCTOR RECEIVER: listen to linked patient's Supabase Realtime ──
   useEffect(() => {
+    if (!authReady) return;
     if (role !== 'family' && role !== 'doctor') return;
+    if (!patientRecordId) {
+      console.log("[HealthContext] Family/Doctor: no patientRecordId, not subscribing to realtime");
+      return;
+    }
     
-    // Subscribe to new Vitals
-    const vitalsSub = supabase.channel('realtime-vitals')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vitals' }, (payload) => {
+    console.log("[HealthContext] ✅ Family/Doctor subscribing to realtime for patient:", patientRecordId);
+    const filterString = `patient_id=eq.${patientRecordId}`;
+
+    // Also fetch LATEST vitals row first so we don't show stale defaults
+    supabase.from('vitals')
+      .select('heart_rate, spo2, temperature, risk_score')
+      .eq('patient_id', patientRecordId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .then(({ data, error }) => {
+        if (!error && data && data.length > 0) {
+          const latest = data[0];
+          const fetchedVitals = {
+            heart_rate: latest.heart_rate,
+            spo2: latest.spo2,
+            temperature_c: latest.temperature,
+            medical_history: 0,
+            lifestyle_score: 8,
+          };
+          console.log("[HealthContext] Loaded latest vitals from DB:", fetchedVitals);
+          setVitals(fetchedVitals);
+          predictAndReact(fetchedVitals, location);
+        } else {
+          console.log("[HealthContext] No existing vitals found or error:", error?.message);
+        }
+      });
+
+    // Subscribe to new Vitals in real-time
+    const vitalsSub = supabase.channel(`realtime-vitals-${patientRecordId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'vitals', filter: filterString }, (payload) => {
+         console.log("[HealthContext] Realtime vitals received:", payload.new);
          const newVitals = {
             heart_rate: payload.new.heart_rate,
             spo2: payload.new.spo2,
@@ -429,26 +566,56 @@ export function HealthProvider({ children }) {
          };
          setVitals(newVitals);
          predictAndReact(newVitals, location); 
-      }).subscribe();
+      }).subscribe((status) => {
+        console.log("[HealthContext] Vitals channel status:", status);
+      });
 
     // Subscribe to Emergency Alerts
-    const alertsSub = supabase.channel('realtime-alerts')
-      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'emergency_alerts' }, (payload) => {
+    const alertsSub = supabase.channel(`realtime-alerts-${patientRecordId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'emergency_alerts', filter: filterString }, (payload) => {
          setEmergencyActive(true);
          pushToast(`alert-${Date.now()}`, role, `URGENT ALERT: Patient in Distress!`, `Triggered by: ${payload.new.triggered_by}. Severity: ${payload.new.severity}`);
-         // Sound Native Notification
          NotificationService.schedule(
            "🚨 PATIENT EMERGENCY",
            `A linked patient has triggered a high severity alert!`,
            { type: "remote_emergency" }
          );
+      }).subscribe((status) => {
+        console.log("[HealthContext] Alerts channel status:", status);
+      });
+
+    // Also fetch latest location
+    supabase.from('locations')
+      .select('lat, lng')
+      .eq('patient_id', patientRecordId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .then(({ data }) => {
+        if (data && data.length > 0) {
+          setLocation(prev => ({
+            ...prev,
+            latitude: data[0].lat,
+            longitude: data[0].lng,
+          }));
+        }
+      });
+
+    // Subscribe to location updates
+    const locationSub = supabase.channel(`realtime-locations-${patientRecordId}`)
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'locations', filter: filterString }, (payload) => {
+         setLocation(prev => ({
+           ...prev,
+           latitude: payload.new.lat,
+           longitude: payload.new.lng,
+         }));
       }).subscribe();
 
     return () => {
       supabase.removeChannel(vitalsSub);
       supabase.removeChannel(alertsSub);
+      supabase.removeChannel(locationSub);
     };
-  }, [role, location, pushToast, predictAndReact]);
+  }, [authReady, role, patientRecordId, pushToast, predictAndReact]);
 
   const simulateEmergency = useCallback(() => {
     wasHighRisk.current = false;
@@ -467,6 +634,9 @@ export function HealthProvider({ children }) {
   const value = {
     vitals,
     prediction,
+    patientRecordId,
+    role,
+    authReady,
     apiBase: API,
     location,
     hospital,

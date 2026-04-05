@@ -86,7 +86,7 @@ function ProtectedRoute({ session, allowedRole, children }) {
       setLoading(false);
       return;
     }
-    
+
     // Fetch user role
     const getRole = async () => {
       const { data, error } = await supabase
@@ -94,13 +94,15 @@ function ProtectedRoute({ session, allowedRole, children }) {
         .select("role")
         .eq("id", session.user.id)
         .single();
-        
+
       if (!error && data) {
         setProfileRole(data.role);
+      } else {
+        setProfileRole(session.user.user_metadata?.role ?? null);
       }
       setLoading(false);
     };
-    
+
     getRole();
   }, [session]);
 
@@ -112,9 +114,11 @@ function ProtectedRoute({ session, allowedRole, children }) {
     return <div style={{ textAlign: "center", marginTop: "4rem" }}>Verifying access...</div>;
   }
 
-  if (allowedRole && profileRole !== allowedRole) {
+  const resolvedRole = profileRole ?? session.user.user_metadata?.role ?? allowedRole ?? "patient";
+
+  if (allowedRole && resolvedRole !== allowedRole) {
     // Redirect them to their actual dashboard if they try to access another
-    return <Navigate to={`/${profileRole}`} replace />;
+    return <Navigate to={`/${resolvedRole}`} replace />;
   }
 
   return children;
@@ -152,14 +156,17 @@ export default function App() {
         <ToastStack />
         <GlobalHeader session={session} />
         <Routes>
-          <Route path="/" element={session ? <Navigate to="/patient" /> : <Auth />} />
-          
+          <Route
+            path="/"
+            element={session ? <Navigate to={`/${session.user.user_metadata?.role ?? "patient"}`} replace /> : <Auth />}
+          />
+
           <Route path="/patient" element={
             <ProtectedRoute session={session} allowedRole="patient">
               <PatientDashboard />
             </ProtectedRoute>
           } />
-          
+
           <Route path="/family" element={
             <ProtectedRoute session={session} allowedRole="family">
               <FamilyTracker />
