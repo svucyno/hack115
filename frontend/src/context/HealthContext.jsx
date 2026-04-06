@@ -346,7 +346,13 @@ export function HealthProvider({ children }) {
       // Trigger Twilio/WhatsApp cloud API alert
       if (familyPhoneRef.current) {
         try {
-          const msg = buildFamilyEmergencyMessage(vit, loc, h, pred);
+          const msg = buildFamilyEmergencyMessage({
+            vitals: vit,
+            pred,
+            lat,
+            lng,
+            trackerUrl: getFamilyTrackerUrl()
+          });
           sendFamilyAlertCloud({
             toPhone: familyPhoneRef.current,
             message: msg || `🚨 URGENT EMERGENCY: High Risk Detected! HR: ${vit.heart_rate} BPM, SpO2: ${vit.spo2}%. Please track live location immediately.`,
